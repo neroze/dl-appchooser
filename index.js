@@ -69,6 +69,7 @@ function goToApp(app = '~') {
 	apps[app].forEach((val, index) => {
 		console.log('Exec: ', val);
 		shell.exec(val);
+		shell.exit(1);
 	})
 }
 

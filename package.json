@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "clui": "^0.3.6",
     "inquirer": "^5.0.1",
     "shelljs": "^0.8.1"
   }
