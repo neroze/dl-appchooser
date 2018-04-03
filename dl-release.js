@@ -10,7 +10,7 @@ const DL = {
 			{
 				type: 'input',
 				name: 'releaseInput',
-				message: `Relese to `,
+				message: `Release to `,
 				filter: function(val) {
 					return val
 				}
@@ -36,21 +36,28 @@ const Spinner = clui.Spinner;
 
 DL.ask()
 .then(ans => {
-	console.log('version ', ans.releaseInput)
 	console.log(`Releasing to Version : ${ans.releaseInput}`)
 	DL.confirm(ans.releaseInput)
 	.then(function(_ans){
-		console.log('confirm', _ans.confirmRelease)
 		if (_ans.confirmRelease) {
-			const countdown = new Spinner(`Pushing release tag ${ans.releaseInput} to Server`, ['⣾','⣽','⣻','⢿','⡿','⣟','⣯','⣷']);
+			const countdown = new Spinner(`Processing release tag ${ans.releaseInput} to Server`, ['⣾','⣽','⣻','⢿','⡿','⣟','⣯','⣷']);
 			countdown.start();
-
-			shell.exec(`git tag -a  ${ans.releaseInput} -m "release" `);
-			shell.exec(`git push --tags`, function() {
-				console.log(`Done relesing ${ans.releaseInput}`);
-				countdown.stop();
-				shell.exit(1);
-			})
+			shell.exec(`git pull origin release`, function() {
+				shell.exec(`git tag -d  ${ans.releaseInput}`);
+				shell.exec(`git push origin :refs/tags/${ans.releaseInput}`);
+				shell.exec(`git tag -a  ${ans.releaseInput} -m "release" `);
+				shell.exec(`git push --tags`, function() {
+					console.log(`Done releasing ${ans.releaseInput}`);
+					countdown.stop();
+					shell.exit(1);
+				})
+			});
+		} else {
+			shell.exit(1);
 		}
 	})
-});
+})
+.catch(function(e){
+	console.log('Error -->', e);
+	shell.exit(1);
+})
