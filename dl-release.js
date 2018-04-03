@@ -42,7 +42,7 @@ DL.ask()
 		if (_ans.confirmRelease) {
 			const countdown = new Spinner(`Processing release tag ${ans.releaseInput} to Server`, ['⣾','⣽','⣻','⢿','⡿','⣟','⣯','⣷']);
 			countdown.start();
-			shell.exec(`git pull origin release`, function() {
+			shell.exec(`git checkout release && git pull origin release`, function() {
 				shell.exec(`git tag -d  ${ans.releaseInput}`);
 				shell.exec(`git push origin :refs/tags/${ans.releaseInput}`);
 				shell.exec(`git tag -a  ${ans.releaseInput} -m "release" `);
